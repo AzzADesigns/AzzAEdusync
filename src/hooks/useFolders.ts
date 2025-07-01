@@ -26,7 +26,7 @@ export function useFolders() {
         if (!folders.includes(currentFolder)) {
             setCurrentFolder(folders[0] || "General");
         }
-    }, [folders]);
+    }, [folders, currentFolder]);
 
     function addFolder(name: string) {
         if (!name || folders.includes(name)) return;

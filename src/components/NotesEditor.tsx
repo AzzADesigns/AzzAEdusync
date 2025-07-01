@@ -51,8 +51,9 @@ export default function NotesEditor({
         notesRef.current.classList.add("print-notes");
         window.print();
         setTimeout(() => {
-            notesRef.current &&
+            if (notesRef.current) {
                 notesRef.current.classList.remove("print-notes");
+            }
         }, 1000);
     }
 

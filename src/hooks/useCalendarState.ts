@@ -56,7 +56,7 @@ export function useCalendarState(folderKey?: string) {
             if (data.title) newTitles[day] = data.title;
         });
         setTitles(newTitles);
-    }, [month, folderKey]);
+    }, [month, folderKey, days]);
 
     function onTitleChange(day: number, title: string) {
         setTitles((prev) => ({ ...prev, [day]: title }));
