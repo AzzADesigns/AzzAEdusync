@@ -27,6 +27,7 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
     const [subject, setSubject] = useState("");
     const [newSubject, setNewSubject] = useState("");
     const [showNewSubject, setShowNewSubject] = useState(false);
+    const [selectedReminder, setSelectedReminder] = useState<Reminder | null>(null);
 
     function handleAdd() {
         setText("");
@@ -134,7 +135,11 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                 {reminders.map((r, idx) => (
                     <li
                         key={r.id}
-                        className="flex flex-col gap-1 bg-neutral-900 rounded-lg px-3 py-2 text-white text-sm min-w-[180px] max-w-xs lg:min-w-0 lg:max-w-full"
+                        className="flex flex-col gap-1 bg-neutral-900 rounded-lg px-3 py-2 text-white text-sm min-w-[180px] max-w-xs lg:min-w-0 lg:max-w-full cursor-pointer hover:bg-neutral-800 transition"
+                        onClick={e => {
+                            if ((e.target as HTMLElement).closest('button')) return;
+                            setSelectedReminder(r);
+                        }}
                     >
                         <div className="flex items-center gap-2">
                             <span className="flex-1 truncate">{r.text}</span>
@@ -142,7 +147,16 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                                 {r.subject}
                             </span>
                             <button
-                                onClick={() => handleEdit(idx)}
+                                onClick={ev => { ev.stopPropagation(); setSelectedReminder(r); }}
+                                className="min-w-[28px] min-h-[28px] flex items-center justify-center rounded hover:bg-white/10 text-white cursor-pointer"
+                                title="Ver detalles"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 4C5 4 1.73 7.11 1 10c.73 2.89 4 6 9 6s8.27-3.11 9-6c-.73-2.89-4-6-9-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6a2 2 0 100 4 2 2 0 000-4z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            <button
+                                onClick={ev => { ev.stopPropagation(); handleEdit(idx); }}
                                 className="min-w-[28px] min-h-[28px] flex items-center justify-center rounded hover:bg-white/10 text-white cursor-pointer"
                                 title="Editar"
                             >
@@ -160,7 +174,7 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                                 </svg>
                             </button>
                             <button
-                                onClick={() => handleDelete(idx)}
+                                onClick={ev => { ev.stopPropagation(); handleDelete(idx); }}
                                 className="min-w-[28px] min-h-[28px] flex items-center justify-center rounded hover:bg-white/10 text-white cursor-pointer"
                                 title="Eliminar"
                             >
@@ -190,35 +204,31 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                 <div className="fixed inset-0 z-50 flex items-end justify-end pointer-events-none">
                     <div className="bg-neutral-950/95 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.7)] px-8 py-6 m-8 flex flex-col items-center min-w-[340px] border border-white/10 animate-fade-in pointer-events-auto">
                         <div className="text-white text-base mb-4 text-center">
-                            {editIdx !== null
-                                ? "Editar recordatorio"
-                                : "Nuevo recordatorio"}
+                            {editIdx !== null ? "Editar recordatorio" : "Nuevo recordatorio"}
                         </div>
-                        <label className="block text-sm text-neutral-400 mb-1">
-                            Nombre de la tarea
-                        </label>
-                        <input
-                            className="w-full mb-2 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200 capitalize"
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                            placeholder="Recordatorio..."
-                        />
-                        <label className="block text-sm text-neutral-400 mb-1">
-                            Fecha de caducidad
-                        </label>
-                        <input
-                            className="w-full mb-3 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base"
-                            value={datetime}
-                            onChange={(e) => setDatetime(e.target.value)}
-                            type="datetime-local"
-                            placeholder="Fecha y hora (opcional)"
-                        />
-                        <label className="block text-sm text-neutral-400 mb-1">
-                            Materia
-                        </label>
-                        <div className="w-full mb-6">
+                        <div className="w-full mb-4">
+                            <label className="block text-sm text-neutral-400 mb-1">Nombre de la tarea</label>
+                            <input
+                                className="w-full mb-6 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200 capitalize"
+                                value={text}
+                                onChange={(e) => setText(e.target.value)}
+                                placeholder="Recordatorio..."
+                            />
+                        </div>
+                        <div className="w-full mb-4">
+                            <label className="block text-sm text-neutral-400 mb-1">Fecha de caducidad</label>
+                            <input
+                                className="w-full mb-6 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200"
+                                value={datetime}
+                                onChange={(e) => setDatetime(e.target.value)}
+                                type="datetime-local"
+                                placeholder="Fecha y hora (opcional)"
+                            />
+                        </div>
+                        <div className="w-full mb-8">
+                            <label className="block text-sm text-neutral-400 mb-1">Materia</label>
                             <select
-                                className="flex-1 px-3 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base"
+                                className="w-full mb-6 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200"
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
                                 disabled={materias.length === 0}
@@ -238,17 +248,52 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                         <div className="flex gap-4 w-full justify-center">
                             <button
                                 onClick={handleSave}
-                                className="px-5 py-2 rounded-lg bg-green-700 hover:bg-green-800 text-white font-semibold shadow transition cursor-pointer"
+                                className="border border-white bg-black text-white rounded-xl px-6 py-3 text-base font-semibold shadow transition hover:bg-white hover:text-black focus:outline-none cursor-pointer"
                             >
                                 Aceptar
                             </button>
                             <button
                                 onClick={handleCancel}
-                                className="px-5 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white font-semibold shadow transition cursor-pointer"
+                                className="border border-white bg-black text-white rounded-xl px-6 py-3 text-base font-semibold shadow transition hover:bg-white hover:text-black focus:outline-none cursor-pointer"
                             >
                                 Cancelar
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {selectedReminder && (
+                <div className="fixed inset-0 z-50 flex items-end justify-end pointer-events-none">
+                    <div className="bg-neutral-950/95 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.7)] px-8 py-6 m-8 flex flex-col items-center min-w-[340px] border border-white/10 animate-fade-in pointer-events-auto">
+                        <div className="text-white text-base mb-4 text-center font-bold">
+                            Detalles del recordatorio
+                        </div>
+                        <div className="w-full mb-2">
+                            <span className="block text-neutral-400 text-xs mb-1">Tarea</span>
+                            <span className="block text-white text-lg break-words">{selectedReminder.text}</span>
+                        </div>
+                        <div className="w-full mb-2">
+                            <span className="block text-neutral-400 text-xs mb-1">Materia</span>
+                            <span className="block text-blue-300 text-base">{selectedReminder.subject}</span>
+                        </div>
+                        {selectedReminder.datetime && (
+                            <div className="w-full mb-2">
+                                <span className="block text-neutral-400 text-xs mb-1">Fecha de caducidad</span>
+                                <span className="block text-white text-base">
+                                    {new Date(selectedReminder.datetime).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                </span>
+                                <span className="block text-neutral-400 text-xs mb-1 mt-1">Hora de caducidad</span>
+                                <span className="block text-white text-base">
+                                    {new Date(selectedReminder.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                </span>
+                            </div>
+                        )}
+                        <button
+                            onClick={() => setSelectedReminder(null)}
+                            className="mt-4 px-5 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white font-semibold shadow transition cursor-pointer"
+                        >
+                            Cerrar
+                        </button>
                     </div>
                 </div>
             )}
