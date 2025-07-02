@@ -40,6 +40,8 @@ export default function Home() {
     const {
         month,
         setMonth,
+        year,
+        setYear,
         days,
         selectedDay,
         setSelectedDay,
@@ -154,6 +156,8 @@ export default function Home() {
                         <Calendar
                             month={month}
                             setMonth={setMonth}
+                            year={year}
+                            setYear={setYear}
                             months={useCalendarState().months}
                             days={days}
                             titles={titles}
