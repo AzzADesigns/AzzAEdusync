@@ -23,26 +23,18 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
 }) => {
     const [editingTask, setEditingTask] = useState<number | null>(null);
     const [editingTaskValue, setEditingTaskValue] = useState("");
-    const [doneTasks, setDoneTasks] = useState<boolean[]>(
-        tasks.map(() => false),
-    );
+    const [doneTasks, setDoneTasks] = useState<{ [task: string]: boolean }>(() => {
+        const stored = localStorage.getItem('doneTasks');
+        if (stored) return JSON.parse(stored);
+        return {};
+    });
 
     const [editingLink, setEditingLink] = useState<number | null>(null);
     const [editingLinkValue, setEditingLinkValue] = useState("");
 
     React.useEffect(() => {
-        setDoneTasks((prev) => {
-            if (tasks.length > prev.length) {
-                return [
-                    ...prev,
-                    ...Array(tasks.length - prev.length).fill(false),
-                ];
-            } else if (tasks.length < prev.length) {
-                return prev.slice(0, tasks.length);
-            }
-            return prev;
-        });
-    }, [tasks.length]);
+        localStorage.setItem('doneTasks', JSON.stringify(doneTasks));
+    }, [doneTasks]);
 
     const handleEditTask = (idx: number) => {
         setEditingTask(idx);
@@ -56,13 +48,22 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
         setEditingTaskValue("");
     };
     const handleToggleDone = (idx: number) => {
-        setDoneTasks((prev) =>
-            prev.map((done, i) => (i === idx ? !done : done)),
-        );
+        const task = tasks[idx];
+        setDoneTasks((prev) => {
+            const updated = { ...prev, [task]: !prev[task] };
+            localStorage.setItem('doneTasks', JSON.stringify(updated));
+            return updated;
+        });
     };
     const handleDeleteTask = (idx: number) => {
+        const taskToDelete = tasks[idx];
         setTasks(tasks.filter((_, i) => i !== idx));
-        setDoneTasks(doneTasks.filter((_, i) => i !== idx));
+        setDoneTasks((prev) => {
+            const updated = { ...prev };
+            delete updated[taskToDelete];
+            localStorage.setItem('doneTasks', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     const handleEditLink = (idx: number) => {
@@ -117,9 +118,9 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                         >
                             <button
                                 onClick={() => handleToggleDone(idx)}
-                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-2 ${doneTasks[idx] ? "bg-green-600 border-green-600" : "border-white/40"} transition cursor-pointer`}
+                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-2 ${doneTasks[task] ? "bg-green-600 border-green-600" : "border-white/40"} transition cursor-pointer`}
                             >
-                                {doneTasks[idx] && (
+                                {doneTasks[task] && (
                                     <span className="text-white text-lg">
                                         ✓
                                     </span>
@@ -151,7 +152,7 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                                 <>
                                     <span
                                         className={
-                                            (doneTasks[idx]
+                                            (doneTasks[task]
                                                 ? "line-through text-neutral-500 "
                                                 : "") + "capitalize"
                                         }
