@@ -6,6 +6,7 @@ export function useReminders(folderKey?: string) {
     const [reminders, setReminders] = useState<Reminder[]>([]);
 
     function setRemindersForCurrent(r: Reminder[]) {
+        setReminders(r);
         localStorage.setItem(storageKey, JSON.stringify(r));
     }
 
