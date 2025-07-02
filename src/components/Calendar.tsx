@@ -54,13 +54,14 @@ const Calendar: React.FC<CalendarProps> = ({
                             </button>
                             <div className="w-full flex flex-col items-center">
                                 <input
-                                    className="w-20 bg-transparent text-center text-xs sm:text-sm text-white border-b border-white/30 focus:outline-none focus:border-blue-400 transition placeholder:text-neutral-500 capitalize"
+                                    className="w-20 bg-transparent text-center text-xs sm:text-sm text-white border-b border-white/30 focus:outline-none focus:border-blue-400 transition placeholder:text-neutral-500 capitalize truncate-mobile"
                                     value={titles[day] || ""}
                                     onChange={(e) =>
                                         onTitleChange(day, e.target.value)
                                     }
                                     placeholder="Título..."
                                     onClick={(e) => e.stopPropagation()}
+                                    maxLength={window.innerWidth < 640 ? 7 : 50}
                                 />
                             </div>
                         </div>

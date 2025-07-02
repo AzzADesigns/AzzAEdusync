@@ -145,7 +145,7 @@ export default function Home() {
                             renameFolder={handleRenameFolder}
                             deleteFolder={handleDeleteFolder}
                             addFolder={handleAddFolder}
-                            className="w-full h-full xl:w-75 2xl:w-90"
+                            className="w-full h-full xl:w-75 2xl:w-90 xl:mt-22.5 2xl:mt-22"
                         />
                     </div>
                     
@@ -168,7 +168,7 @@ export default function Home() {
                             reminders={reminders}
                             setReminders={setReminders}
                             materias={folders}
-                            className="w-full h-full xl:w-70 2xl:w-90"
+                            className="w-full h-full xl:w-70 2xl:w-90 xl:mt-22.5 2xl:mt-22"
                         />
                     </div>
                 </div>
