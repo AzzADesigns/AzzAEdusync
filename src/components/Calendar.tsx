@@ -61,7 +61,6 @@ const Calendar: React.FC<CalendarProps> = ({
                                     }
                                     placeholder="Título..."
                                     onClick={(e) => e.stopPropagation()}
-                                    maxLength={window.innerWidth < 640 ? 7 : 50}
                                 />
                             </div>
                         </div>
