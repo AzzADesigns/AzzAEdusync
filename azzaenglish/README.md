@@ -58,6 +58,11 @@ Una plataforma web moderna y minimalista para organizar tu aprendizaje, tareas y
 
 ---
 
+## 📸 Capturas de pantalla
+
+> _Agrega aquí tus capturas de pantalla para mostrar la interfaz y las funcionalidades principales._
+
+---
 
 ## 📦 Instalación y uso
 
