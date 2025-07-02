@@ -110,11 +110,11 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                         Agregar
                     </button>
                 </form>
-                <ul className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                <ul className="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin tasks-list">
                     {tasks.map((task, idx) => (
                         <li
                             key={idx}
-                            className="flex items-center gap-2 text-neutral-200 text-base pl-2 border-l-2 border-blue-600"
+                            className="flex items-start gap-2 text-neutral-200 text-base pl-2 border-l-2 border-blue-600 overflow-x-hidden"
                         >
                             <button
                                 onClick={() => handleToggleDone(idx)}
@@ -154,8 +154,9 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                                         className={
                                             (doneTasks[task]
                                                 ? "line-through text-neutral-500 "
-                                                : "") + "capitalize"
+                                                : "") + "capitalize break-words"
                                         }
+                                        style={{ wordBreak: 'break-word', maxWidth: '90vw', minWidth: 0, display: 'inline-block' }}
                                     >
                                         {task}
                                     </span>
@@ -176,6 +177,28 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                         </li>
                     ))}
                 </ul>
+                <style>{`
+                .tasks-list::-webkit-scrollbar {
+                    width: 6px;
+                    background: transparent;
+                }
+                .tasks-list::-webkit-scrollbar-thumb {
+                    background: #444;
+                    border-radius: 8px;
+                }
+                .tasks-list::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .tasks-list {
+                    scrollbar-width: thin;
+                    scrollbar-color: #444 transparent;
+                }
+                @media (min-width: 768px) {
+                    .tasks-list span {
+                        max-width: 420px !important;
+                    }
+                }
+                `}</style>
             </div>
             <div>
                 <div className="text-lg font-medium mb-4 text-neutral-300">

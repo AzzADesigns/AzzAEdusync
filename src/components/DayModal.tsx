@@ -37,7 +37,19 @@ const DayModal: React.FC<DayModalProps> = ({
     linkInput,
     setLinkInput,
 }) => {
+    React.useEffect(() => {
+        if (!open) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [open, onClose]);
+
     if (!open) return null;
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-lg transition-all duration-300 ease-in-out opacity-100 animate-fade-in">
             <div className="w-[98vw] h-[98vh] md:w-[90vw] md:h-[90vh] flex flex-col items-center justify-center relative transition-all duration-300 ease-in-out scale-100 animate-modal-in">

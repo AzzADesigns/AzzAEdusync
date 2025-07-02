@@ -43,6 +43,7 @@ function setLocalData(
 
 export function useCalendarState(folderKey?: string) {
     const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [year, setYear] = useState<number>(new Date().getFullYear());
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
     const [titles, setTitles] = useState<{ [key: number]: string }>({});
 
@@ -74,6 +75,8 @@ export function useCalendarState(folderKey?: string) {
     return {
         month,
         setMonth,
+        year,
+        setYear,
         days,
         selectedDay,
         setSelectedDay,
