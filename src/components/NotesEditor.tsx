@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useReactToPrint } from 'react-to-print';
 
 interface NotesEditorProps {
     value: string;
@@ -25,12 +26,32 @@ export default function NotesEditor({
 }: NotesEditorProps) {
     const notesRef = useRef<HTMLDivElement>(null);
     const [showHighlightColors, setShowHighlightColors] = useState(false);
+    const [activeHighlightColor, setActiveHighlightColor] = useState<string | null>(null);
+
+    const handlePrint = useReactToPrint({
+        contentRef: notesRef,
+        pageStyle: '@page { size: A4; margin: 20mm; } body { -webkit-print-color-adjust: exact; }',
+    });
 
     useEffect(() => {
         if (notesRef.current && notesRef.current.innerHTML !== value) {
             notesRef.current.innerHTML = value || "";
         }
     }, [value]);
+
+    useEffect(() => {
+        if (!notesRef.current) return;
+        const handleFocus = () => {
+            if (activeHighlightColor) {
+                format("hiliteColor", activeHighlightColor);
+            }
+        };
+        const el = notesRef.current;
+        el.addEventListener("focus", handleFocus);
+        return () => {
+            el.removeEventListener("focus", handleFocus);
+        };
+    }, [activeHighlightColor]);
 
     function format(command: string, val?: string) {
         if (!notesRef.current) return;
@@ -43,19 +64,10 @@ export default function NotesEditor({
     }
 
     function handleColorSelect(color: string) {
-        format("hiliteColor", color);
+        const realColor = color === 'transparent' ? '#18181b' : color;
+        setActiveHighlightColor(realColor);
         setShowHighlightColors(false);
-    }
-
-    function handlePrint() {
-        if (!notesRef.current) return;
-        notesRef.current.classList.add("print-notes");
-        window.print();
-        setTimeout(() => {
-            if (notesRef.current) {
-                notesRef.current.classList.remove("print-notes");
-            }
-        }, 1000);
+        format("hiliteColor", realColor);
     }
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -124,12 +136,26 @@ export default function NotesEditor({
                     </button>
                     <button
                         onClick={handleHighlightClick}
-                        className="px-2 py-1 rounded border border-white/30 text-white hover:bg-white hover:text-black transition cursor-pointer"
+                        className="px-2 py-1 rounded border border-white/30 text-white hover:bg-white hover:text-black transition cursor-pointer flex items-center gap-2"
                     >
+                        {activeHighlightColor === '#18181b' ? (
+                            <span className="w-4 h-4 flex items-center justify-center rounded-full border border-white/40 bg-neutral-800 text-white text-xs font-bold">×</span>
+                        ) : activeHighlightColor ? (
+                            <span className="w-4 h-4 rounded-full border border-white/40" style={{ backgroundColor: activeHighlightColor }} />
+                        ) : (
+                            <span className="w-4 h-4 rounded-full border border-white/40 bg-neutral-700" />
+                        )}
                         Remarcar
                     </button>
                     {showHighlightColors && (
                         <div className="absolute top-10 left-0 flex gap-2 bg-neutral-900 border border-white/20 rounded-lg p-2 z-10 shadow-lg">
+                            <button
+                                onClick={() => handleColorSelect('transparent')}
+                                className="w-7 h-7 rounded-full border-2 border-white/40 cursor-pointer focus:outline-none flex items-center justify-center bg-neutral-800 hover:bg-neutral-700"
+                                title="Quitar resaltado"
+                            >
+                                <span className="text-white text-lg font-bold">×</span>
+                            </button>
                             {highlightColors.map((color) => (
                                 <button
                                     key={color.value}
@@ -147,9 +173,12 @@ export default function NotesEditor({
                     contentEditable
                     ref={notesRef}
                     suppressContentEditableWarning
-                    onInput={(e) =>
-                        onChange((e.target as HTMLDivElement).innerHTML)
-                    }
+                    onInput={(e) => {
+                        if (activeHighlightColor) {
+                            format("hiliteColor", activeHighlightColor);
+                        }
+                        onChange((e.target as HTMLDivElement).innerHTML);
+                    }}
                     style={{
                         minHeight: "200px",
                         maxHeight: "100%",
@@ -191,13 +220,6 @@ export default function NotesEditor({
                     )}
                 </div>
             </div>
-            <style>{`
-        @media print {
-          body * { visibility: hidden !important; }
-          .print-notes, .print-notes * { visibility: visible !important; }
-          .print-notes { position: absolute !important; left: 0; top: 0; width: 100vw; background: white; color: black; z-index: 9999; box-shadow: none; }
-        }
-      `}</style>
         </div>
     );
 }
