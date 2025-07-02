@@ -49,8 +49,8 @@ const DayModal: React.FC<DayModalProps> = ({
                 >
                     ×
                 </button>
-                <div className="w-full max-w-[1800px] grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 h-[60vh] md:h-[65vh] overflow-auto">
-                    <div className="flex flex-col h-full">
+                <div className="w-full max-w-[1800px] flex flex-col md:flex-row gap-4 md:gap-8 h-[60vh] md:h-[65vh] overflow-auto">
+                    <div className="flex flex-col h-full order-2 md:order-1 w-full md:w-1/2">
                         <div className="text-lg font-medium mb-4 text-neutral-300">
                             Notas
                         </div>
@@ -64,16 +64,18 @@ const DayModal: React.FC<DayModalProps> = ({
                             />
                         </div>
                     </div>
-                    <TasksLinksColumn
-                        tasks={tasks}
-                        setTasks={setTasks}
-                        taskInput={taskInput}
-                        setTaskInput={setTaskInput}
-                        links={links}
-                        setLinks={setLinks}
-                        linkInput={linkInput}
-                        setLinkInput={setLinkInput}
-                    />
+                    <div className="order-1 md:order-2 w-full md:w-1/2">
+                        <TasksLinksColumn
+                            tasks={tasks}
+                            setTasks={setTasks}
+                            taskInput={taskInput}
+                            setTaskInput={setTaskInput}
+                            links={links}
+                            setLinks={setLinks}
+                            linkInput={linkInput}
+                            setLinkInput={setLinkInput}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

@@ -30,7 +30,21 @@ export default function NotesEditor({
 
     const handlePrint = useReactToPrint({
         contentRef: notesRef,
-        pageStyle: '@page { size: A4; margin: 20mm; } body { -webkit-print-color-adjust: exact; }',
+        pageStyle: `
+          @page { size: A4; margin: 20mm; }
+          body { -webkit-print-color-adjust: exact; }
+          .notes-area {
+            background: white !important;
+            color: black !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            border: none !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+          .notes-area [style*="background-color"] { color: white !important; }
+        `,
     });
 
     useEffect(() => {
@@ -101,6 +115,18 @@ export default function NotesEditor({
         window.open(blobUrl, "_blank");
     }
 
+    const handleClearStyles = () => {
+        format("removeFormat");
+        setActiveHighlightColor('#18181b');
+        format("hiliteColor", "#18181b");
+        format("foreColor", "white");
+        ["bold", "italic", "underline"].forEach(cmd => {
+            if (document.queryCommandState(cmd)) {
+                format(cmd);
+            }
+        });
+    };
+
     return (
         <div className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-4">
@@ -132,7 +158,7 @@ export default function NotesEditor({
                         onClick={() => format("underline")}
                         className="px-2 py-1 rounded border border-white/30 text-white hover:bg-white hover:text-black transition cursor-pointer"
                     >
-                        U
+                        <span style={{ textDecoration: 'underline' }}>Sub</span>
                     </button>
                     <button
                         onClick={handleHighlightClick}
@@ -167,9 +193,15 @@ export default function NotesEditor({
                             ))}
                         </div>
                     )}
+                    <button
+                        onClick={handleClearStyles}
+                        className="px-2 py-1 rounded border border-white/30 text-white hover:bg-white hover:text-black transition cursor-pointer"
+                    >
+                        Limpiar estilos
+                    </button>
                 </div>
                 <div
-                    className="w-full h-full min-h-[200px] bg-neutral-900 text-white rounded-xl p-6 text-lg border-none shadow focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-neutral-500 resize overflow-auto notes-area"
+                    className="w-full bg-neutral-900 text-white rounded-xl p-6 text-lg border border-white notes-area xl:max-h-[245px] 2xl:max-h-[340px] overflow-y-auto scrollbar-thin relative"
                     contentEditable
                     ref={notesRef}
                     suppressContentEditableWarning
@@ -180,10 +212,10 @@ export default function NotesEditor({
                         onChange((e.target as HTMLDivElement).innerHTML);
                     }}
                     style={{
-                        minHeight: "200px",
-                        maxHeight: "100%",
                         resize: "vertical",
+                        minHeight: "100px"
                     }}
+                    data-placeholder="comience a construir su aprendizaje..."
                 />
                 <div className="mt-4">
                     <label className="block mb-2 text-sm text-neutral-400">
@@ -220,6 +252,48 @@ export default function NotesEditor({
                     )}
                 </div>
             </div>
+            <style>{`
+                @media print {
+                  .notes-area {
+                    max-height: none !important;
+                    overflow: visible !important;
+                  }
+                }
+                .notes-area::-webkit-scrollbar {
+                  width: 6px;
+                  background: transparent;
+                }
+                .notes-area::-webkit-scrollbar-thumb {
+                  background: #444;
+                  border-radius: 8px;
+                }
+                .notes-area::-webkit-scrollbar-track {
+                  background: transparent;
+                }
+                .notes-area {
+                  scrollbar-width: thin;
+                  scrollbar-color: #444 transparent;
+                  border: 1.5px solid #fff;
+                  position: relative;
+                }
+                .notes-area:empty:before {
+                  content: attr(data-placeholder);
+                  color: #aaa;
+                  position: absolute;
+                  left: 1.5rem;
+                  top: 1.2rem;
+                  pointer-events: none;
+                  font-size: 1rem;
+                  font-style: italic;
+                  opacity: 0.7;
+                }
+                .notes-area b,
+                .notes-area strong,
+                .notes-area [style*="font-weight: bold"],
+                .notes-area [style*="font-weight: 700"] {
+                  font-weight: 900 !important;
+                }
+            `}</style>
         </div>
     );
 }
