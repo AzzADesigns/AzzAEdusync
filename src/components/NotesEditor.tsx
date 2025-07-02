@@ -5,6 +5,7 @@ interface NotesEditorProps {
     onChange: (html: string) => void;
     pdfs: { name: string; data: string }[];
     setPdfs: (pdfs: { name: string; data: string }[]) => void;
+    selectedDateLabel: string;
 }
 
 const highlightColors = [
@@ -20,6 +21,7 @@ export default function NotesEditor({
     onChange,
     pdfs = [],
     setPdfs,
+    selectedDateLabel,
 }: NotesEditorProps) {
     const notesRef = useRef<HTMLDivElement>(null);
     const [showHighlightColors, setShowHighlightColors] = useState(false);
@@ -47,7 +49,6 @@ export default function NotesEditor({
 
     function handlePrint() {
         if (!notesRef.current) return;
-        // Agrega una clase especial para impresión
         notesRef.current.classList.add("print-notes");
         window.print();
         setTimeout(() => {
@@ -76,7 +77,6 @@ export default function NotesEditor({
     }
 
     function openPdf(pdf: { name: string; data: string }) {
-        // Extraer solo la parte base64 si es data URL
         const base64 = pdf.data.split(",")[1];
         const byteCharacters = atob(base64);
         const byteNumbers = new Array(byteCharacters.length);
@@ -93,7 +93,7 @@ export default function NotesEditor({
         <div className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-4">
                 <div className="text-lg font-medium text-neutral-300">
-                    apuntes
+                    {selectedDateLabel}
                 </div>
                 <button
                     onClick={handlePrint}
@@ -133,9 +133,7 @@ export default function NotesEditor({
                             {highlightColors.map((color) => (
                                 <button
                                     key={color.value}
-                                    onClick={() =>
-                                        handleColorSelect(color.value)
-                                    }
+                                    onClick={() => handleColorSelect(color.value)}
                                     className="w-7 h-7 rounded-full border-2 border-white/40 cursor-pointer focus:outline-none"
                                     style={{ backgroundColor: color.value }}
                                     title={color.name}
@@ -145,7 +143,7 @@ export default function NotesEditor({
                     )}
                 </div>
                 <div
-                    className="w-full h-full min-h-[400px] bg-neutral-900 text-white rounded-xl p-6 text-lg border-none shadow focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-neutral-500 resize overflow-auto notes-area"
+                    className="w-full h-full min-h-[200px] bg-neutral-900 text-white rounded-xl p-6 text-lg border-none shadow focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-neutral-500 resize overflow-auto notes-area"
                     contentEditable
                     ref={notesRef}
                     suppressContentEditableWarning
@@ -153,7 +151,7 @@ export default function NotesEditor({
                         onChange((e.target as HTMLDivElement).innerHTML)
                     }
                     style={{
-                        minHeight: "400px",
+                        minHeight: "200px",
                         maxHeight: "100%",
                         resize: "vertical",
                     }}
@@ -166,7 +164,7 @@ export default function NotesEditor({
                         type="file"
                         accept="application/pdf"
                         onChange={handleFileChange}
-                        className="mb-2"
+                        className="mb-2 capitalize"
                     />
                     {pdfs.length > 0 && (
                         <ul className="space-y-2 mt-2">

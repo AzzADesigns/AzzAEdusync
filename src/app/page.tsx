@@ -1,10 +1,6 @@
 "use client";
 import Calendar from "../components/Calendar";
 import DayModal from "../components/DayModal";
-import NotesEditor from "../components/NotesEditor";
-import TasksLinksColumn from "../components/TasksLinksColumn";
-import DayLabel from "../components/DayLabel";
-import DayTitleInput from "../components/DayTitleInput";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useDayData } from "../hooks/useDayData";
 import Footer from "../components/Footer";
@@ -61,8 +57,6 @@ export default function Home() {
         setLinks,
         linkInput,
         setLinkInput,
-        title,
-        setTitle,
         pdfs,
         setPdfs,
     } = useDayData(selectedDay, month, folderKey);
@@ -122,15 +116,28 @@ export default function Home() {
         }
     }, [folders, pendingMateria]);
 
+    // Utilidad para mostrar la fecha seleccionada en formato bonito
+    function getSelectedDateLabel() {
+        if (!selectedDay) return "";
+        const now = new Date();
+        const y = now.getFullYear();
+        const date = new Date(y, month, selectedDay);
+        const weekDays = [
+            "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
+        ];
+        const weekDay = weekDays[date.getDay()];
+        return `${weekDay} ${selectedDay}`;
+    }
+
     return (
-        <div className="h-screen flex flex-col justify-between bg-neutral-950 overflow-hidden">
-            <main className="flex-1 flex flex-col items-center justify-start p-4 pt-2 text-white overflow-hidden w-full">
+        <div className="flex flex-col min-h-screen bg-neutral-950">
+            <main className="flex-1 flex flex-col items-center justify-start p-4 pt-2 text-white w-full">
                 <h1 className="text-4xl font-extrabold mb-2 tracking-tight text-center pt-6">
                     Calendario
                 </h1>
-                <div className="w-full flex flex-col md:flex-row items-center justify-center overflow-visible mt-4 gap-4">
-                    {/* Wrapper relative SOLO para el calendario y la columna de carpetas */}
-                    <div className="relative flex flex-col md:flex-row items-center justify-center w-full md:w-fit">
+                <div className="max-w-[1900px] flex flex-col xl:flex-row xl:justify-between  gap-8 xl:gap-10 2xl:gap-30 mt-4 ">
+                    {/* Columna izquierda - FolderTabs */}
+                    <div className="  w-full h-full  flex justify-center lg:justify-end mb-8 xl:mb-0">
                         <FolderTabs
                             folders={folders}
                             currentFolder={currentFolder}
@@ -138,65 +145,50 @@ export default function Home() {
                             renameFolder={handleRenameFolder}
                             deleteFolder={handleDeleteFolder}
                             addFolder={handleAddFolder}
-                            className="w-full md:w-auto static md:absolute md:top-15 md:left-[-230px] lg:top-26 mb-4 md:mb-0"
-                            style={undefined}
+                            className="w-full h-full xl:w-75 2xl:w-90"
                         />
-                        {/* Calendario principal */}
-                        <div className="flex flex-col  mt-10 items-center justify-center overflow-hidden w-full md:w-auto">
-                            <Calendar
-                                month={month}
-                                setMonth={setMonth}
-                                months={useCalendarState().months}
-                                days={days}
-                                titles={titles}
-                                onTitleChange={onTitleChange}
-                                onDayClick={setSelectedDay}
-                            />
-                        </div>
+                    </div>
+                    
+                    {/* Columna central - Calendario */}
+                    <div className="">
+                        <Calendar
+                            month={month}
+                            setMonth={setMonth}
+                            months={useCalendarState().months}
+                            days={days}
+                            titles={titles}
+                            onTitleChange={onTitleChange}
+                            onDayClick={setSelectedDay}
+                        />
+                    </div>
+                    
+                    {/* Columna derecha - RemindersColumn */}
+                    <div className=" w-full h-full flex justify-center xl:block mt-8 xl:mt-0">
                         <RemindersColumn
                             reminders={reminders}
                             setReminders={setReminders}
                             materias={folders}
-                            className="w-full md:w-auto static md:absolute md:top-15 md:right-[-320px] xl:top-26 mt-4 md:mt-0"
+                            className="w-full h-full xl:w-70 2xl:w-90"
                         />
                     </div>
                 </div>
                 <DayModal
-                    open={!!selectedDay}
+                    open={selectedDay !== null}
                     onClose={() => setSelectedDay(null)}
-                >
-                    <div className="w-full h-full flex flex-col items-center justify-center px-2 md:px-0">
-                        <div className="flex items-center gap-4 sm:gap-6 text-2xl sm:text-4xl font-bold mb-6 mt-6 flex-wrap justify-center">
-                            <DayLabel day={selectedDay} month={month} />
-                            <DayTitleInput value={title} onChange={setTitle} />
-                        </div>
-                        <div className="w-full max-w-[1800px] grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 h-[60vh] md:h-[65vh] overflow-auto">
-                            <div className="flex flex-col h-full">
-                                <div className="text-lg font-medium mb-4 text-neutral-300">
-                                    apuntes
-                                </div>
-                                <div className="flex flex-col gap-2 bg-neutral-900 rounded-xl p-2 h-full">
-                                    <NotesEditor
-                                        value={notes}
-                                        onChange={setNotes}
-                                        pdfs={pdfs}
-                                        setPdfs={setPdfs}
-                                    />
-                                </div>
-                            </div>
-                            <TasksLinksColumn
-                                tasks={tasks}
-                                setTasks={setTasks}
-                                taskInput={taskInput}
-                                setTaskInput={setTaskInput}
-                                links={links}
-                                setLinks={setLinks}
-                                linkInput={linkInput}
-                                setLinkInput={setLinkInput}
-                            />
-                        </div>
-                    </div>
-                </DayModal>
+                    value={notes}
+                    onChange={setNotes}
+                    pdfs={pdfs}
+                    setPdfs={setPdfs}
+                    selectedDateLabel={getSelectedDateLabel()}
+                    tasks={tasks}
+                    setTasks={setTasks}
+                    taskInput={taskInput}
+                    setTaskInput={setTaskInput}
+                    links={links}
+                    setLinks={setLinks}
+                    linkInput={linkInput}
+                    setLinkInput={setLinkInput}
+                />
                 <ConfirmDialog
                     open={confirmOpen}
                     message="¿Eliminar esta carpeta y todos sus datos?"
@@ -207,7 +199,7 @@ export default function Home() {
                     open={inputOpen}
                     message={
                         inputMode === "create"
-                            ? "Nombre de la nueva carpeta/calendario:"
+                            ? "Nombre de la nueva carpeta / materia:"
                             : "Nuevo nombre para la carpeta:"
                     }
                     value={inputValue}

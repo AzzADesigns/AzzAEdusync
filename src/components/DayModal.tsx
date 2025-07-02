@@ -1,12 +1,42 @@
 import React from "react";
+import NotesEditor from "./NotesEditor";
+import TasksLinksColumn from "./TasksLinksColumn";
 
 interface DayModalProps {
     open: boolean;
     onClose: () => void;
-    children: React.ReactNode;
+    value: string;
+    onChange: (html: string) => void;
+    pdfs: { name: string; data: string }[];
+    setPdfs: (pdfs: { name: string; data: string }[]) => void;
+    selectedDateLabel: string;
+    tasks: string[];
+    setTasks: (tasks: string[]) => void;
+    taskInput: string;
+    setTaskInput: (input: string) => void;
+    links: string[];
+    setLinks: (links: string[]) => void;
+    linkInput: string;
+    setLinkInput: (input: string) => void;
 }
 
-const DayModal: React.FC<DayModalProps> = ({ open, onClose, children }) => {
+const DayModal: React.FC<DayModalProps> = ({
+    open,
+    onClose,
+    value,
+    onChange,
+    pdfs,
+    setPdfs,
+    selectedDateLabel,
+    tasks,
+    setTasks,
+    taskInput,
+    setTaskInput,
+    links,
+    setLinks,
+    linkInput,
+    setLinkInput,
+}) => {
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-lg transition-all duration-300 ease-in-out opacity-100 animate-fade-in">
@@ -19,16 +49,33 @@ const DayModal: React.FC<DayModalProps> = ({ open, onClose, children }) => {
                 >
                     ×
                 </button>
-                <div className="w-full h-full flex flex-col items-center justify-center">
-                    {children}
+                <div className="w-full max-w-[1800px] grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 h-[60vh] md:h-[65vh] overflow-auto">
+                    <div className="flex flex-col h-full">
+                        <div className="text-lg font-medium mb-4 text-neutral-300">
+                            Notas
+                        </div>
+                        <div className="flex flex-col gap-2 bg-neutral-900 rounded-xl p-2 h-full">
+                            <NotesEditor
+                                value={value}
+                                onChange={onChange}
+                                pdfs={pdfs}
+                                setPdfs={setPdfs}
+                                selectedDateLabel={selectedDateLabel}
+                            />
+                        </div>
+                    </div>
+                    <TasksLinksColumn
+                        tasks={tasks}
+                        setTasks={setTasks}
+                        taskInput={taskInput}
+                        setTaskInput={setTaskInput}
+                        links={links}
+                        setLinks={setLinks}
+                        linkInput={linkInput}
+                        setLinkInput={setLinkInput}
+                    />
                 </div>
             </div>
-            <style>{`
-                @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-                .animate-fade-in { animation: fade-in 0.3s cubic-bezier(.4,0,.2,1); }
-                @keyframes modal-in { from { opacity: 0; transform: scale(0.95);} to { opacity: 1; transform: scale(1);} }
-                .animate-modal-in { animation: modal-in 0.3s cubic-bezier(.4,0,.2,1); }
-            `}</style>
         </div>
     );
 };

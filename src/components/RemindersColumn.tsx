@@ -98,10 +98,7 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
 
     return (
         <div
-            className={`bg-neutral-950/95 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.7)] px-6 py-8 min-w-[300px] border border-white/10 z-30 ${className || ''} transition-all duration-300 ease-in-out animate-fade-in` +
-              ' ' +
-              (inputOpen ? 'relative' : 'md:absolute')
-            }
+            className={`bg-neutral-950/95 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.7)] px-6 py-8 min-w-[300px] border border-white/10 z-30 ${className || ''} transition-all duration-300 ease-in-out animate-fade-in`}
         >
             <div className="flex items-center justify-between mb-2">
                 <span className="text-white font-bold text-lg">
@@ -128,7 +125,7 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                     </svg>
                 </button>
             </div>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-row lg:flex-col flex-wrap gap-2 overflow-x-auto lg:overflow-x-visible scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-neutral-700 scrollbar-track-transparent pb-2 lg:pb-0">
                 {reminders.length === 0 && (
                     <li className="text-neutral-400 text-sm">
                         Sin recordatorios
@@ -137,7 +134,7 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                 {reminders.map((r, idx) => (
                     <li
                         key={r.id}
-                        className="flex flex-col gap-1 bg-neutral-900 rounded-lg px-3 py-2 text-white text-sm"
+                        className="flex flex-col gap-1 bg-neutral-900 rounded-lg px-3 py-2 text-white text-sm min-w-[180px] max-w-xs lg:min-w-0 lg:max-w-full"
                     >
                         <div className="flex items-center gap-2">
                             <span className="flex-1 truncate">{r.text}</span>
@@ -201,11 +198,10 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
                             Nombre de la tarea
                         </label>
                         <input
-                            className="w-full mb-3 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base"
+                            className="w-full mb-2 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200 capitalize"
                             value={text}
                             onChange={(e) => setText(e.target.value)}
-                            placeholder="Texto del recordatorio"
-                            autoFocus
+                            placeholder="Recordatorio..."
                         />
                         <label className="block text-sm text-neutral-400 mb-1">
                             Fecha de caducidad
@@ -259,6 +255,17 @@ const RemindersColumn: React.FC<RemindersColumnProps> = ({
             <style>{`
         @keyframes fade-in { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none; } }
         .animate-fade-in { animation: fade-in 0.25s cubic-bezier(.4,0,.2,1); }
+        .scrollbar-thin::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 9999px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
       `}</style>
         </div>
     );

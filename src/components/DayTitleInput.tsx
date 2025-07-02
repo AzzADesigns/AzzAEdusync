@@ -14,10 +14,10 @@ const DayTitleInput: React.FC<DayTitleInputProps> = ({
     style,
 }) => (
     <input
-        className={`ml-4 bg-transparent text-2xl font-light text-neutral-400 border-b border-white/30 focus:outline-none focus:border-blue-400 transition placeholder:text-neutral-500 text-center ${className}`}
+        className={`w-full bg-transparent text-center text-xl font-bold text-white border-b border-white/30 focus:outline-none focus:border-blue-400 transition placeholder:text-neutral-500 capitalize ${className}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Título..."
+        placeholder="Título del día..."
         style={{ minWidth: 120, maxWidth: 300, ...style }}
     />
 );

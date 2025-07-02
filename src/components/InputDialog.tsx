@@ -25,7 +25,7 @@ const InputDialog: React.FC<InputDialogProps> = ({
                     {message}
                 </div>
                 <input
-                    className="w-full mb-6 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200"
+                    className="w-full mb-6 px-4 py-2 rounded-lg bg-neutral-900 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-600 text-base transition-all duration-200 capitalize"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     autoFocus
@@ -33,24 +33,18 @@ const InputDialog: React.FC<InputDialogProps> = ({
                 <div className="flex gap-4 w-full justify-center">
                     <button
                         onClick={onConfirm}
-                        className="px-5 py-2 rounded-lg bg-green-700 hover:bg-green-800 text-white font-semibold shadow transition cursor-pointer duration-200"
+                        className="border border-white bg-black text-white rounded-xl px-6 py-3 text-base font-semibold shadow transition hover:bg-white hover:text-black focus:outline-none cursor-pointer"
                     >
                         Aceptar
                     </button>
                     <button
                         onClick={onCancel}
-                        className="px-5 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white font-semibold shadow transition cursor-pointer duration-200"
+                        className="border border-white bg-black text-white rounded-xl px-6 py-3 text-base font-semibold shadow transition hover:bg-white hover:text-black focus:outline-none cursor-pointer"
                     >
                         Cancelar
                     </button>
                 </div>
             </div>
-            <style>{`
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fade-in { animation: fade-in 0.3s cubic-bezier(.4,0,.2,1); }
-        @keyframes dialog-in { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none; } }
-        .animate-dialog-in { animation: dialog-in 0.3s cubic-bezier(.4,0,.2,1); }
-      `}</style>
         </div>
     );
 };

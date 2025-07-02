@@ -30,7 +30,6 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
     const [editingLink, setEditingLink] = useState<number | null>(null);
     const [editingLinkValue, setEditingLinkValue] = useState("");
 
-    // Sync doneTasks with tasks length
     React.useEffect(() => {
         setDoneTasks((prev) => {
             if (tasks.length > prev.length) {
@@ -85,7 +84,7 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
         <div className="flex flex-col gap-12 h-full">
             <div>
                 <div className="text-lg font-medium mb-4 text-neutral-300">
-                    tareas
+                    Tareas
                 </div>
                 <form
                     onSubmit={(e) => {
@@ -98,7 +97,7 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                     className="flex gap-2 mb-4"
                 >
                     <input
-                        className="flex-1 bg-neutral-900 text-white rounded-xl p-4 text-base border-none shadow focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-neutral-500"
+                        className="flex-1 bg-neutral-900 text-white rounded-xl p-4 text-base border-none shadow focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-neutral-500 capitalize"
                         value={taskInput}
                         onChange={(e) => setTaskInput(e.target.value)}
                         placeholder="Nueva tarea..."
@@ -129,7 +128,7 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                             {editingTask === idx ? (
                                 <>
                                     <input
-                                        className="bg-neutral-800 text-white rounded px-2 py-1 border border-white/20 focus:outline-none"
+                                        className="bg-neutral-800 text-white rounded px-2 py-1 border border-white/20 focus:outline-none capitalize"
                                         value={editingTaskValue}
                                         onChange={(e) =>
                                             setEditingTaskValue(e.target.value)
@@ -152,9 +151,9 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                                 <>
                                     <span
                                         className={
-                                            doneTasks[idx]
-                                                ? "line-through text-neutral-500"
-                                                : ""
+                                            (doneTasks[idx]
+                                                ? "line-through text-neutral-500 "
+                                                : "") + "capitalize"
                                         }
                                     >
                                         {task}
@@ -179,7 +178,7 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
             </div>
             <div>
                 <div className="text-lg font-medium mb-4 text-neutral-300">
-                    links
+                    Links
                 </div>
                 <form
                     onSubmit={(e) => {
@@ -192,7 +191,7 @@ const TasksLinksColumn: React.FC<TasksLinksColumnProps> = ({
                     className="flex gap-2 mb-4"
                 >
                     <input
-                        className="flex-1 bg-neutral-900 text-white rounded-xl p-4 text-base border-none shadow focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-neutral-500"
+                        className="flex-1 bg-neutral-900 text-white rounded-xl p-4 text-base border-none shadow focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-neutral-500 capitalize"
                         value={linkInput}
                         onChange={(e) => setLinkInput(e.target.value)}
                         placeholder="Pega un link..."

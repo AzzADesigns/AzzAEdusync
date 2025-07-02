@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const months = [
     "Enero",
@@ -46,7 +46,10 @@ export function useCalendarState(folderKey?: string) {
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
     const [titles, setTitles] = useState<{ [key: number]: string }>({});
 
-    const days = Array.from({ length: daysInMonth[month] }, (_, i) => i + 1);
+    const days = useMemo(() => 
+        Array.from({ length: daysInMonth[month] }, (_, i) => i + 1), 
+        [month]
+    );
 
     useEffect(() => {
         // Cargar títulos de todos los días del mes actual
